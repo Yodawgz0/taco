@@ -81,10 +81,10 @@ export default function Chat() {
           {chatRepliesSet.map((ele, index) => (
             <div
               key={index}
-              className={`text-white m-14 w-2/3 py-3 my-2 items-center rounded-lg flex flex-row+ ${
+              className={`text-white m-14 w-2/3 py-3 my-2 items-center flex flex-row+ ${
                 ele.owner === "bot"
-                  ? " bg-hypMedPurple"
-                  : " bg-hypDarkPurple justify-end float-right"
+                  ? " bg-hypMedPurple rounded-e-3xl rounded-tl-3xl "
+                  : " bg-hypDarkPurple rounded-s-3xl rounded-tr-3xl justify-end float-right"
               }`}
             >
               {ele.owner === "bot" && (
@@ -109,7 +109,7 @@ export default function Chat() {
         {showStopResponding && (
           <button
             onClick={() => handleStopResp()}
-            className="text-white fixed top-[83%] left-[50%] border-solid border-white border-2 rounded-lg px-4"
+            className="text-hypLightPurple fixed top-[83%] left-[50%] border-solid border-hypLightPurple border-2 rounded-lg px-4"
           >
             ▣ Stop Responding
           </button>
@@ -117,7 +117,7 @@ export default function Chat() {
         <div className="grid grid-cols-12 gap-3 mx-10 my-11">
           <div className="col-span-10">
             <input
-              className="w-full px-4 rounded-lg py-2"
+              className="w-full px-4 rounded-lg py-2 border-solid border-hypLightPurple border-2 "
               onChange={(e) => {
                 setChatText(e.target.value);
                 setalertInfoFlag([false, ""]);
