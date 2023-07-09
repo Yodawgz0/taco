@@ -1,4 +1,4 @@
-import React, { LegacyRef, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import botIcon from "../assets/auto.png";
 import userIcon from "../assets/user.png";
 
@@ -26,6 +26,7 @@ export default function Chat() {
       timeStamp: new Date().toISOString(),
     },
   ]);
+  const [showStopResponding, setShowStopResponding] = useState<boolean>(false);
 
   const lastChatRef = useRef<HTMLDivElement>(null);
 
@@ -40,9 +41,14 @@ export default function Chat() {
         },
       ]);
       setChatText("");
+      setShowStopResponding(true);
     } else {
       setalertInfoFlag([true, "Can't Send Empty Text!"]);
     }
+  };
+
+  const handleStopResp = () => {
+    setShowStopResponding(false);
   };
 
   useEffect(() => {
@@ -70,6 +76,7 @@ export default function Chat() {
         ) : (
           <></>
         )}
+
         <div className=" overflow-scroll scroll h-auto">
           {chatRepliesSet.map((ele, index) => (
             <div
@@ -99,7 +106,14 @@ export default function Chat() {
             </div>
           ))}
         </div>
-
+        {showStopResponding && (
+          <button
+            onClick={() => handleStopResp()}
+            className="text-white fixed top-[83%] left-[50%] border-solid border-white border-2 rounded-lg px-4"
+          >
+            ▣ Stop Responding
+          </button>
+        )}
         <div className="grid grid-cols-12 gap-3 mx-10 my-11">
           <div className="col-span-10">
             <input
@@ -114,8 +128,9 @@ export default function Chat() {
           </div>
           <div className="mx-1 flex flex-row">
             <button
-              className="text-white me-3 bg-hypLightPurple px-8 rounded-lg py-2"
+              className="text-white me-3 bg-hypLightPurple px-8 rounded-lg py-2 focus:bg-violet-950"
               onClick={(e) => onSendHandler()}
+              disabled={showStopResponding}
             >
               Send
             </button>
