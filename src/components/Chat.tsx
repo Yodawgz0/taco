@@ -29,8 +29,18 @@ export default function Chat() {
   const [showStopResponding, setShowStopResponding] = useState<boolean>(false);
 
   const lastChatRef = useRef<HTMLDivElement>(null);
-
+  function checkText(text: string) {
+    const regex = /^[A-Za-z0-9 !?]+$/;
+    if (text.length === 1 && (text === "!" || text === "?")) {
+      return false;
+    }
+    return regex.test(text);
+  }
   const onSendHandler = () => {
+    if (!checkText(chatText)) {
+      setalertInfoFlag([true, "Please enter meaningful text!"]);
+      return;
+    }
     if (chatText.length) {
       setChatRepliesSet([
         ...chatRepliesSet,
@@ -124,6 +134,7 @@ export default function Chat() {
               }}
               value={chatText}
               onKeyDown={(e) => (e.key === "Enter" ? onSendHandler() : "")}
+              placeholder="Type your text here...."
             />
           </div>
           <div className="mx-1 flex flex-row">
