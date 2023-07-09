@@ -10,34 +10,11 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
-  .container {
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
-    scrollbar-width: none; /* Firefox */
-  }
-  .container::-webkit-scrollbar {
-    display: none; /* Safari and Chrome */
-  }
 }
-
-.backGroundImage {
-  width: 100vw;
+.container {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
 }
-
-.hypBlack {
-  color: black;
-}
-.hypBlackLight {
-  color: #0d0d0d;
-}
-
-.hypLightPurple {
-  color: #9e32ea;
-}
-
-.hypMedPurple {
-  color: #7f17d8;
-}
-
-.hypDarkPurple {
-  color: #410194;
+.container::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
 }

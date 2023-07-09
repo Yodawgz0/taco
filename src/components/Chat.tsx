@@ -70,7 +70,7 @@ export default function Chat() {
 
   return (
     <>
-      <div className=" w-full flex flex-col justify-between">
+      <div className=" w-full flex flex-col justify-between ">
         {alertInfoFlag[0] ? (
           <p className="fixed right-[35%] mt-7 py-1 px-4 bg-red-600 text-white rounded-xl">
             {alertInfoFlag[1]}
@@ -87,7 +87,7 @@ export default function Chat() {
           <></>
         )}
 
-        <div className=" overflow-scroll scroll h-auto">
+        <div className=" overflow-scroll scroll h-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
           {chatRepliesSet.map((ele, index) => (
             <div
               key={index}
