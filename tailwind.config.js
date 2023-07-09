@@ -8,11 +8,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        hypBlack: "#000000",
-        hypBlackLight: "#0d0d0d",
-        hypLightPurple: "#9e32ea",
-        hypMedPurple: "#7f17d8",
-        hypDarkPurple: "#410194",
+        hypBlack: "#F9F6E4",
+        hypBlackLight: "#c1b79d",
+        hypLightPurple: "#14312a",
+        hypMedPurple: "#b6c7dd",
+        hypDarkPurple: "#789Fb5",
       },
     },
   },
