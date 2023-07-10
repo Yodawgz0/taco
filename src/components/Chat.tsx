@@ -26,7 +26,7 @@ export default function Chat() {
 
   const lastChatRef = useRef<HTMLDivElement>(null);
   function checkText(text: string) {
-    const regex = /^[A-Za-z0-9 !??&_]+$/;
+    const regex = /^[A-Za-z0-9 !?&_]+$/;
     if (text.length === 1 && (text === "!" || text === "?")) {
       return false;
     }
@@ -93,6 +93,7 @@ export default function Chat() {
         .catch((error) => {
           console.error("Error:", error);
           setalertInfoFlag([true, "Something Went Wrong!"]);
+          setShowStopResponding(false);
         });
     } else {
       setalertInfoFlag([true, "Can't Send Empty Text!"]);
