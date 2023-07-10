@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import botIcon from "../assets/auto.png";
 import userIcon from "../assets/user.png";
+import axios from "axios";
 
 interface chattexts {
   owner: string;
@@ -17,12 +18,7 @@ export default function Chat() {
   const [chatRepliesSet, setChatRepliesSet] = useState<chattexts[]>([
     {
       owner: "bot",
-      text: "Hey! How are your doing?",
-      timeStamp: new Date().toISOString(),
-    },
-    {
-      owner: "user",
-      text: "Hello",
+      text: "Hi! I am TACO: Terms And Conditions Oracle. What can I help you with ?",
       timeStamp: new Date().toISOString(),
     },
   ]);
@@ -30,28 +26,74 @@ export default function Chat() {
 
   const lastChatRef = useRef<HTMLDivElement>(null);
   function checkText(text: string) {
-    const regex = /^[A-Za-z0-9 !?]+$/;
+    const regex = /^[A-Za-z0-9 !??&_]+$/;
     if (text.length === 1 && (text === "!" || text === "?")) {
       return false;
     }
-    return regex.test(text);
+    return true;
   }
-  const onSendHandler = () => {
+
+  const handleClear = () => {
+    setChatRepliesSet([
+      {
+        owner: "bot",
+        text: "Hi! I am TACO: Terms And Conditions Oracle, what can I help you with ?",
+        timeStamp: dateFormatting(new Date().toISOString()),
+      },
+    ]);
+  };
+
+  useEffect(() => {}, [chatRepliesSet]);
+
+  const onSendHandler = async () => {
+    setalertInfoFlag([false, ""]);
     if (!checkText(chatText)) {
       setalertInfoFlag([true, "Please enter meaningful text!"]);
       return;
     }
     if (chatText.length) {
+      setShowStopResponding(true);
       setChatRepliesSet([
         ...chatRepliesSet,
         {
           owner: "user",
           text: chatText,
-          timeStamp: new Date().toISOString(),
+          timeStamp: dateFormatting(new Date().toISOString()),
         },
       ]);
       setChatText("");
-      setShowStopResponding(true);
+      const formData = new FormData();
+      formData.append("message", chatText);
+
+      axios
+        .post("http://34.29.65.217:5000/taco-request", formData, {
+          headers: {
+            Authorization:
+              "7a28fd58593f05e7297f8ca5fd04a36bef5723347d49c541bfb767cabd6c1016",
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          setChatRepliesSet([
+            ...chatRepliesSet,
+            {
+              owner: "user",
+              text: chatText,
+              timeStamp: dateFormatting(new Date().toISOString()),
+            },
+            {
+              owner: "bot",
+              text: response.data,
+              timeStamp: dateFormatting(new Date().toISOString()),
+            },
+          ]);
+
+          setShowStopResponding(false);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setalertInfoFlag([true, "Something Went Wrong!"]);
+        });
     } else {
       setalertInfoFlag([true, "Can't Send Empty Text!"]);
     }
@@ -67,6 +109,20 @@ export default function Chat() {
       block: "start",
     });
   }, [chatRepliesSet]);
+
+  const dateFormatting = (date: string) => {
+    const formattedDate =
+      new Date(date).getMonth() +
+      "/" +
+      new Date(date).getDate() +
+      "/" +
+      new Date(date).getFullYear() +
+      " " +
+      new Date(date).getHours() +
+      ":" +
+      new Date(date).getMinutes();
+    return formattedDate;
+  };
 
   return (
     <>
@@ -91,24 +147,36 @@ export default function Chat() {
           {chatRepliesSet.map((ele, index) => (
             <div
               key={index}
-              className={`text-white m-14 w-2/3 py-3 my-2 items-center flex flex-row+ ${
+              className={`text-hypLightPurple m-14 w-2/3 py-3 my-2 items-center flex flex-row+ ${
                 ele.owner === "bot"
                   ? " bg-hypMedPurple rounded-e-3xl rounded-tl-3xl "
                   : " bg-hypDarkPurple rounded-s-3xl rounded-tr-3xl justify-end float-right"
               }`}
             >
               {ele.owner === "bot" && (
-                <img
-                  className="w-10 mx-3 bg-white rounded-xl"
-                  src={botIcon.src}
-                />
+                <div className="px-3 w-20">
+                  <img
+                    className="w-10 mx-3 bg-white rounded-xl"
+                    src={botIcon.src}
+                  />
+                </div>
               )}
-              <p className="ms-3">{ele.text}</p>
+              <div className="p-3">
+                {" "}
+                <p className="ms-3">{ele.text}</p>
+              </div>
+
               {ele.owner === "user" && (
-                <img
-                  className="w-10 mx-3 bg-white rounded-xl"
-                  src={userIcon.src}
-                />
+                <div className="">
+                  {" "}
+                  <img
+                    className="w-10 mx-3 bg-white rounded-xl"
+                    src={userIcon.src}
+                  />
+                  <p className="mt-1 mr-2 text-slate-600 text-xs">
+                    {ele.timeStamp.toString()}
+                  </p>
+                </div>
               )}
               <div
                 ref={index === chatRepliesSet.length - 1 ? lastChatRef : null}
@@ -119,9 +187,10 @@ export default function Chat() {
         {showStopResponding && (
           <button
             onClick={() => handleStopResp()}
+            disabled={true}
             className="text-hypLightPurple fixed top-[83%] left-[50%] border-solid border-hypLightPurple border-2 rounded-lg px-4"
           >
-            ▣ Stop Responding
+            ▣ Generating Response...
           </button>
         )}
         <div className="grid grid-cols-12 gap-3 mx-10 my-11">
@@ -133,6 +202,7 @@ export default function Chat() {
                 setalertInfoFlag([false, ""]);
               }}
               value={chatText}
+              disabled={showStopResponding}
               onKeyDown={(e) => (e.key === "Enter" ? onSendHandler() : "")}
               placeholder="Type your text here...."
             />
@@ -145,7 +215,10 @@ export default function Chat() {
             >
               Send
             </button>
-            <button className="text-white bg-slate-700 px-8 rounded-lg py-2">
+            <button
+              onClick={() => handleClear()}
+              className="text-white bg-slate-700 px-8 rounded-lg py-2"
+            >
               {" "}
               Clear
             </button>
