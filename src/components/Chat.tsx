@@ -66,7 +66,7 @@ export default function Chat() {
       formData.append("message", chatText);
 
       axios
-        .post("http://34.29.65.217:5000/taco-request", formData, {
+        .post("https://34.29.65.217:5000/taco-request", formData, {
           headers: {
             Authorization:
               "7a28fd58593f05e7297f8ca5fd04a36bef5723347d49c541bfb767cabd6c1016",
